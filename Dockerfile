@@ -16,8 +16,8 @@ USER jenkins
 # Copy the plugins list to the container
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 
-# Install Jenkins plugins using the install-plugins.sh script
-RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+# Install Jenkins plugins using the Jenkins plugin manager
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 
 # Expose Jenkins port
 EXPOSE 8080

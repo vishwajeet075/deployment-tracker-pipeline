@@ -1,11 +1,17 @@
 pipeline {
   agent any
 
+  environment {
+    GIT_REPO = 'https://github.com/vishwajeet075/Deployment-Impact-Tracker.git'
+    GIT_BRANCH = 'main'
+    GIT_CREDENTIALS = 'github-credentials' // Add your GitHub credentials in Jenkins
+  }
+
   stages {
     // Stage 1: Checkout code from GitHub
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/vishwajeet075/Deployment-Impact-Tracker.git'
+        git branch: "${GIT_BRANCH}", url: "${GIT_REPO}", credentialsId: "${GIT_CREDENTIALS}"
       }
     }
 
@@ -53,12 +59,24 @@ pipeline {
       }
     }
 
-    // Stage 3: Deploy the updated website
-    stage('Deploy') {
+    // Stage 3: Commit and push changes back to GitHub
+    stage('Commit and Push') {
       steps {
         script {
-          // Use scp or rsync to deploy the updated files to your server
-          sh 'scp -r . user@your-server:/var/www/html'
+          // Configure Git
+          sh 'git config --global user.name "Jenkins"'
+          sh 'git config --global user.email "jenkins@example.com"'
+
+          // Add all changes
+          sh 'git add .'
+
+          // Commit the changes
+          sh 'git commit -m "Added feedback widget to index.html"'
+
+          // Push the changes back to GitHub
+          withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+            sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/vishwajeet075/Deployment-Impact-Tracker.git ${GIT_BRANCH}'
+          }
         }
       }
     }
@@ -66,7 +84,7 @@ pipeline {
 
   post {
     success {
-      echo 'Pipeline succeeded! Feedback widget added and deployed.'
+      echo 'Pipeline succeeded! Feedback widget added and changes pushed to GitHub.'
     }
     failure {
       echo 'Pipeline failed! Check the logs for errors.'
