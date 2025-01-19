@@ -13,12 +13,11 @@ RUN apt-get update && apt-get install -y \
 # Switch back to Jenkins user
 USER jenkins
 
+# Copy the plugins list to the container
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+
 # Install Jenkins plugins
-RUN jenkins-plugin-cli --plugins \
-    github \
-    pipeline \
-    blueocean \
-    email-ext
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 
 # Expose Jenkins port
 EXPOSE 8080
