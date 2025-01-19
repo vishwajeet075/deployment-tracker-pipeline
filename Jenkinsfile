@@ -4,7 +4,8 @@ pipeline {
   environment {
     GIT_REPO = 'https://github.com/vishwajeet075/Deployment-Impact-Tracker.git'
     GIT_BRANCH = 'master'
-    GIT_CREDENTIALS = 'github-credentials'
+    GIT_USERNAME = credentials('GIT_USERNAME') // Fetch from environment variables
+    GIT_PASSWORD = credentials('GIT_PASSWORD') // Fetch from environment variables
   }
 
   stages {
@@ -313,9 +314,8 @@ pipeline {
           sh 'git add .'
           sh 'git commit -m "Added interactive feedback elements"'
           
-          withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-            sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/vishwajeet075/Deployment-Impact-Tracker.git ${GIT_BRANCH}'
-          }
+          // Use environment variables for GitHub credentials
+          sh "git push https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vishwajeet075/Deployment-Impact-Tracker.git ${GIT_BRANCH}"
         }
       }
     }
