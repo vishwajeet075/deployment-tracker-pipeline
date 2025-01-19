@@ -1,4 +1,4 @@
-github
-pipeline
-blueocean
-email-ext
+github:latest
+pipeline:latest
+blueocean:latest
+email-ext:latest

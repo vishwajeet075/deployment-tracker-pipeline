@@ -5,10 +5,13 @@ FROM jenkins/jenkins:lts
 USER root
 
 # Install necessary tools (e.g., Git, Docker CLI)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y \
     git \
     curl \
-    docker.io
+    docker.io && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Switch back to Jenkins user
 USER jenkins
@@ -17,7 +20,7 @@ USER jenkins
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 
 # Install Jenkins plugins using the Jenkins plugin manager
-RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt --verbose
 
 # Expose Jenkins port
 EXPOSE 8080
