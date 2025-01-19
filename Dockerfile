@@ -1,10 +1,6 @@
-# Use the official Jenkins image
 FROM jenkins/jenkins:lts
 
-# Switch to root to install dependencies
 USER root
-
-# Install necessary tools (e.g., Git, Docker CLI)
 RUN apt-get update && \
     apt-get install -y \
     git \
@@ -13,14 +9,14 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Switch back to Jenkins user
 USER jenkins
 
-# Copy the plugins list to the container
-COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+# Install specific plugin versions that are known to work together
+RUN jenkins-plugin-cli --plugins \
+    git:latest \
+    workflow-aggregator:latest \
+    blueocean:latest \
+    email-ext:latest \
+    configuration-as-code:latest
 
-# Install Jenkins plugins using the Jenkins plugin manager
-RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt --verbose
-
-# Expose Jenkins port
 EXPOSE 8080

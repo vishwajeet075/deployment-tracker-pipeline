@@ -1,4 +1,0 @@
-github:latest
-pipeline:latest
-blueocean:latest
-email-ext:latest
