@@ -1,7 +1,7 @@
 # Use the official Jenkins LTS image as the base
 FROM jenkins/jenkins:lts
 
-# Switch to root to install required system tools and modify configurations
+# Switch to root to install required system tools
 USER root
 
 # Install necessary dependencies
@@ -13,9 +13,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Disable CSRF protection by modifying the Jenkins configuration file
-RUN echo "Disabling CSRF protection in Jenkins..." && \
-    sed -i '/<useCrumbs>true<\/useCrumbs>/c\<useCrumbs>false<\/useCrumbs>' /var/jenkins_home/config.xml
+# Copy the startup script to disable CSRF protection
+COPY disable-csrf.sh /usr/local/bin/disable-csrf.sh
+RUN chmod +x /usr/local/bin/disable-csrf.sh
 
 # Switch back to the Jenkins user
 USER jenkins
@@ -31,6 +31,6 @@ RUN jenkins-plugin-cli --plugins \
 EXPOSE 8080
 
 
-
-# Start Jenkins
+# Start Jenkins and run the script to disable CSRF protection
+ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/disable-csrf.sh"]
 CMD ["jenkins.sh"]
