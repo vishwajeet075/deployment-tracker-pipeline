@@ -30,7 +30,5 @@ RUN jenkins-plugin-cli --plugins \
 # Expose Jenkins web interface port
 EXPOSE 8080
 
-
 # Start Jenkins and run the script to disable CSRF protection
-ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/disable-csrf.sh"]
-CMD ["jenkins.sh"]
+CMD ["/usr/local/bin/disable-csrf.sh"]

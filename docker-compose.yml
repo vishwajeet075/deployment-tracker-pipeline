@@ -11,8 +11,7 @@ services:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false  # Disable setup wizard
       - JENKINS_OPTS=--httpPort=8080  # Explicitly set Jenkins to use port 8080
     restart: unless-stopped
-    entrypoint: ["/bin/tini", "--", "/usr/local/bin/disable-csrf.sh"]  # Use custom entrypoint
-    command: ["jenkins.sh"]  # Start Jenkins
+    command: ["/usr/local/bin/disable-csrf.sh"]  # Use custom script to start Jenkins
 
 volumes:
   jenkins_home:  # Define volume for Jenkins data
