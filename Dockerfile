@@ -9,7 +9,8 @@ RUN apt-get update && \
     apt-get install -y \
     git \
     curl \
-    docker.io && \
+    docker.io \
+    netcat-openbsd && \  # Install netcat
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
