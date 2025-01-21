@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# Wait for Jenkins to fully initialize
+# Start Jenkins in the background
+echo "Starting Jenkins..."
+/usr/local/bin/jenkins.sh &
+
+# Wait for Jenkins to fully initialize and create config.xml
 echo "Waiting for Jenkins to initialize..."
 while [ ! -f /var/jenkins_home/config.xml ]; do
   sleep 5
@@ -20,6 +24,5 @@ sed -i '/<useCrumbs>true<\/useCrumbs>/c\<useCrumbs>false<\/useCrumbs>' /var/jenk
 echo "Restarting Jenkins to apply CSRF changes..."
 curl -X POST http://localhost:8080/safeRestart
 
-# Start Jenkins
-echo "Starting Jenkins..."
-exec /usr/local/bin/jenkins.sh "$@"
+# Keep the container running
+tail -f /dev/null
