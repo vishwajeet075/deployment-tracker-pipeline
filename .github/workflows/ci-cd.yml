@@ -1,9 +1,8 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - master
+  repository_dispatch:
+    types: [trigger-pipeline]  # Triggered by the webhook
 
 jobs:
   add-feedback-button:
